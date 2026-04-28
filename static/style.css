@@ -1,0 +1,76 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+h1 {
+    color: #ff6b6b;
+    margin-top: 0;
+}
+
+input[type="file"],
+input[type="text"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+button {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #ff5252;
+}
+
+.hidden {
+    display: none;
+}
+
+.loading {
+    color: #888;
+    font-style: italic;
+    margin: 15px 0;
+}
+
+#suggestionsOutput,
+#recipeOutput {
+    background: #fff5f5;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+    white-space: pre-wrap;
+    /* Markdown/Satır atlamalarını korur */
+    margin-bottom: 20px;
+    border-left: 4px solid #ff6b6b;
+}
+
+.selection-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
