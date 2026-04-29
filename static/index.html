@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ne Pişirsem?</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍳</text></svg>">
 </head>
 
 <body>
@@ -22,24 +24,31 @@
 
             <button id="analyzeBtn" style="margin-top: 20px; width: 100%;">Malzemeleri Analiz Et</button>
         </div>
-
-        <div id="loading1" class="hidden loading">Şef malzemeleri inceliyor... 🧑‍🍳</div>
+        <div id="loading1" class="hidden loading" style="margin-top: 15px;">Şef malzemeleri inceliyor... 🧑‍🍳</div>
 
         <div id="suggestionsSection" class="hidden">
-            <h2>Öneriler:</h2>
-            <div id="suggestionsOutput"></div>
-
-            <div class="selection-section">
-                <input type="text" id="mealChoice" placeholder="Seçtiğin yemeğin adını yaz...">
-                <button id="recipeBtn">Tarifi Getir</button>
+            <div id="suggestionsOutput"
+                style="background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px; text-align: left;">
             </div>
         </div>
 
-        <div id="loading2" class="hidden loading">Tarif hazırlanıyor... 📝</div>
+        <div class="selection-section" style="display: none;">
+            <div id="meal-selection-container"
+                style="display: none; text-align: left; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;">
+            </div>
+
+            <button id="recipeBtn"
+                style="width: 100%; margin-bottom: 20px; background-color: #ff6b6b; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">Tarifi
+                Getir 🍽️</button>
+        </div>
+
+        <div id="loading2" class="hidden loading" style="margin-top: 15px;">Tarif hazırlanıyor... 📝</div>
 
         <div id="recipeSection" class="hidden">
-            <h2>Tarif:</h2>
-            <div id="recipeOutput"></div>
+            <h2 style="color: #ff6b6b;">Tarif:</h2>
+            <div id="recipeOutput"
+                style="background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd; text-align: left;">
+            </div>
         </div>
     </div>
 
