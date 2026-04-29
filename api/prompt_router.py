@@ -4,7 +4,7 @@ from services.ai_service import get_recipe_details, get_meal_suggestions_from_te
 
 router = APIRouter()
 
-# Kullanıcıdan gelecek verinin formatını belirliyoruz (JSON formatında meal_name bekliyoruz)
+# Kullanıcıdan gelecek verinin formatını belirleme (JSON formatında meal_name beklebir)
 class RecipeRequest(BaseModel):
     meal_name: str
 
@@ -31,7 +31,7 @@ async def get_recipe(request: RecipeRequest):
         raise HTTPException(status_code=400, detail="Yemek adı boş olamaz.")
     
     try:
-        # Yapay zeka servisimizden seçilen yemeğin detaylarını alıyoruz
+        # Yapay zeka'dan seçilen yemeğin detaylarını alma
         result = get_recipe_details(request.meal_name)
         
         return {"recipe": result}

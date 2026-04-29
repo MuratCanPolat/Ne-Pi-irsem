@@ -64,7 +64,6 @@ button:hover {
     border-radius: 8px;
     text-align: left;
     white-space: pre-wrap;
-    /* Markdown/Satır atlamalarını korur */
     margin-bottom: 20px;
     border-left: 4px solid #ff6b6b;
 }

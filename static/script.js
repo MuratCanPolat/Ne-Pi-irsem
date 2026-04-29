@@ -55,6 +55,13 @@ analyzeBtn.addEventListener('click', async () => {
             suggestionsOutput.innerText = data.suggestions;
             suggestionsSection.classList.remove('hidden');
 
+            const selectionDiv = document.querySelector('.selection-section');
+            if (data.suggestions.includes("Şefimiz") || data.suggestions.includes("Üzgünüm")) {
+                selectionDiv.style.display = 'none'; // Kutuyu sakla
+            } else {
+                selectionDiv.style.display = 'block'; // Normal tarifse kutuyu göster
+            }
+
             // Başarılı işlem sonrası inputları temizle
             imageInput.value = "";
             textInput.value = "";
