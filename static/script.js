@@ -15,7 +15,7 @@ analyzeBtn.addEventListener('click', async () => {
     const file = imageInput.files[0];
     const textContent = textInput.value.trim();
 
-    // Çift girdi veya boş girdi kontrolleri (1. ve 2. Kurallar)
+    // Çift girdi veya boş girdi kontrolleri
     if (file && textContent) {
         alert("🚨 Lütfen sadece bir seçenek kullanın: Ya fotoğraf yükleyin ya da metin yazın!");
         return;
@@ -111,12 +111,16 @@ recipeBtn.addEventListener('click', async () => {
 
     const mealName = selectedRadio.value;
 
-    // Butonu Kilitleme Animasyonu (5. Kural)
+    // Butonu Kilitleme Animasyonu
     const originalBtnText = recipeBtn.innerText;
     recipeBtn.disabled = true;
     recipeBtn.innerText = "Şef Hazırlıyor... 🧑‍🍳";
     recipeBtn.style.opacity = "0.7";
     recipeBtn.style.cursor = "not-allowed";
+
+    saveRecipeBtn.disabled = false;
+    saveRecipeBtn.innerText = "Bu Tarifi Kaydet 💾";
+    saveRecipeBtn.style.backgroundColor = "#4CAF50";
 
     loading2.classList.remove('hidden');
     recipeSection.classList.add('hidden');
@@ -145,5 +149,94 @@ recipeBtn.addEventListener('click', async () => {
         recipeBtn.innerText = originalBtnText;
         recipeBtn.style.opacity = "1";
         recipeBtn.style.cursor = "pointer";
+    }
+});
+const saveRecipeBtn = document.getElementById('saveRecipeBtn');
+const viewSavedBtn = document.getElementById('viewSavedBtn');
+const savedRecipesModal = document.getElementById('savedRecipesModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const savedRecipesList = document.getElementById('savedRecipesList');
+
+// Tarifi Kaydetme
+saveRecipeBtn.addEventListener('click', async () => {
+    const selectedRadio = document.querySelector('input[name="mealChoice"]:checked');
+    const mealName = selectedRadio ? selectedRadio.value : "İsimsiz Yemek";
+    const recipeText = document.getElementById('recipeOutput').innerText;
+
+    const originalText = saveRecipeBtn.innerText;
+    saveRecipeBtn.disabled = true;
+    saveRecipeBtn.innerText = "Kaydediliyor... ⏳";
+    saveRecipeBtn.style.opacity = "0.7";
+
+
+
+    try {
+        const response = await fetch('/api/save-recipe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ meal_name: mealName, recipe_text: recipeText })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            saveRecipeBtn.innerText = "Kaydedildi! 🎉";
+            saveRecipeBtn.style.backgroundColor = "#2e7d32";
+            saveRecipeBtn.style.opacity = "1";
+        } else {
+            alert("🚨 Hata: " + (data.detail || data.message || "Bilinmeyen sunucu hatası"));
+            saveRecipeBtn.disabled = false;
+            saveRecipeBtn.innerText = originalText;
+            saveRecipeBtn.style.opacity = "1";
+        }
+    } catch (error) {
+        alert("Bağlantı hatası: " + error);
+        saveRecipeBtn.disabled = false;
+        saveRecipeBtn.innerText = originalText;
+        saveRecipeBtn.style.opacity = "1";
+    }
+});
+
+// Tarifleri Görüntüleme
+viewSavedBtn.addEventListener('click', async () => {
+    savedRecipesModal.style.display = 'flex';
+    savedRecipesList.innerHTML = '<p>Şefin defteri getiriliyor... ⏳</p>';
+
+    try {
+        const response = await fetch('/api/get-saved-recipes');
+        const data = await response.json();
+
+        if (response.ok) {
+            if (data.recipes.length === 0) {
+                savedRecipesList.innerHTML = '<p style="color: #777;">Henüz kaydedilmiş bir tarifin yok. 🍽️</p>';
+            } else {
+                let htmlContent = "";
+                data.recipes.forEach(recipe => {
+                    htmlContent += `
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 15px;">
+                            <h3 style="margin-top: 0; color: #ff6b6b; border-bottom: 1px dashed #ddd; padding-bottom: 5px;">🍽️ ${recipe.meal_name}</h3>
+                            <p style="white-space: pre-wrap; font-size: 14.5px; color: #444; line-height: 1.5;">${recipe.recipe_text}</p>
+                        </div>
+                    `;
+                });
+                savedRecipesList.innerHTML = htmlContent;
+            }
+        } else {
+            savedRecipesList.innerHTML = '<p style="color: red;">Tarifler yüklenirken bir hata oluştu!</p>';
+        }
+    } catch (error) {
+        savedRecipesList.innerHTML = '<p style="color: red;">Bağlantı hatası oluştu!</p>';
+    }
+});
+
+// Pop-up'ı Kapatma
+closeModalBtn.addEventListener('click', () => {
+    savedRecipesModal.style.display = 'none';
+});
+
+// Kullanıcı pencerenin dışındaki karanlık alana tıklarsa da kapansın
+window.addEventListener('click', (event) => {
+    if (event.target === savedRecipesModal) {
+        savedRecipesModal.style.display = 'none';
     }
 });
