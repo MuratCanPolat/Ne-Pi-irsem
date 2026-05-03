@@ -29,6 +29,9 @@ class RecipeSaveRequest(BaseModel):
     meal_name: str
     recipe_text: str
 
+class RecipeDeleteRequest(BaseModel):
+    meal_name: str
+
 DB_FILE = "saved_recipes.json"
 
 # Dosya yoksa boş liste oluşturur
@@ -69,6 +72,30 @@ async def get_saved_recipes():
         return {"recipes": recipes}
     except Exception as e:
         return {"recipes": []}
+
+@app.post("/api/delete-recipe")
+async def delete_recipe(request: RecipeDeleteRequest):
+    try:
+        if not os.path.exists(DB_FILE):
+            return {"status": "error", "message": "Veritabanı bulunamadı!"}
+        
+        with open(DB_FILE, "r", encoding="utf-8") as f:
+            recipes = json.load(f)
+        
+        # Gönderilen yemek adına sahip olmayanları yeni bir liste yap
+        original_count = len(recipes)
+        recipes = [r for r in recipes if r.get("meal_name") != request.meal_name]
+        
+        if len(recipes) == original_count:
+            return {"status": "error", "message": "Silinecek tarif bulunamadı!"}
+        
+        # Güncellenmiş listeyi dosyaya tekrar yaz
+        with open(DB_FILE, "w", encoding="utf-8") as f:
+            json.dump(recipes, f, ensure_ascii=False, indent=4)
+            
+        return {"status": "success", "message": "Tarif başarıyla silindi!"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
     # Sistemin ayakta olup olmadığını test etmek için kök dizin kontrolü
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

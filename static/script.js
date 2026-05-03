@@ -213,8 +213,9 @@ viewSavedBtn.addEventListener('click', async () => {
                 let htmlContent = "";
                 data.recipes.forEach(recipe => {
                     htmlContent += `
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 15px;">
-                            <h3 style="margin-top: 0; color: #ff6b6b; border-bottom: 1px dashed #ddd; padding-bottom: 5px;">🍽️ ${recipe.meal_name}</h3>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 15px; position: relative;">
+                            <button class="delete-recipe-btn" data-meal="${recipe.meal_name}" style="position: absolute; top: 15px; right: 15px; background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold;">🗑️ Sil</button>
+                            <h3 style="margin-top: 0; color: #ff6b6b; border-bottom: 1px dashed #ddd; padding-bottom: 5px; padding-right: 60px;">🍽️ ${recipe.meal_name}</h3>
                             <p style="white-space: pre-wrap; font-size: 14.5px; color: #444; line-height: 1.5;">${recipe.recipe_text}</p>
                         </div>
                     `;
@@ -238,5 +239,42 @@ closeModalBtn.addEventListener('click', () => {
 window.addEventListener('click', (event) => {
     if (event.target === savedRecipesModal) {
         savedRecipesModal.style.display = 'none';
+    }
+});
+
+// Tarif Silme
+savedRecipesList.addEventListener('click', async (event) => {
+    if (event.target.classList.contains('delete-recipe-btn')) {
+        const mealName = event.target.getAttribute('data-meal');
+
+        if (!confirm(`"${mealName}" tarifini silmek istediğinize emin misiniz?`)) {
+            return;
+        }
+
+        const originalText = event.target.innerText;
+        event.target.innerText = "⏳";
+        event.target.disabled = true;
+
+        try {
+            const response = await fetch('/api/delete-recipe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ meal_name: mealName })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.status === "success") {
+                viewSavedBtn.click();
+            } else {
+                alert("🚨 Hata: " + (data.detail || data.message));
+                event.target.innerText = originalText;
+                event.target.disabled = false;
+            }
+        } catch (error) {
+            alert("Bağlantı hatası: " + error);
+            event.target.innerText = originalText;
+            event.target.disabled = false;
+        }
     }
 });
